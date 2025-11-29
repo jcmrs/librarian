@@ -1,0 +1,9 @@
+**Task:** Configure Git Ignore Rules
+**Goal:** Create a `.gitignore` file in the root directory.
+**Content:**
+```text
+__pycache__/
+*.pyc
+.env
+.cognee_memory/
+.DS_Store
