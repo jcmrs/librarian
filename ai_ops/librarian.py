@@ -43,7 +43,7 @@ async def ingest(target):
 
     # Build the graph (Cognify)
     print("🧠 Cognifying (Building Relationships)...")
-    await cognee.cognify(dataset_name="session")
+    await cognee.cognify(datasets=["session"])
     print("✅ Indexing Complete")
 
 async def ask(query):
@@ -53,7 +53,7 @@ async def ask(query):
     print(f"🤔 Thinking: {query}")
     
     # 1. Search the graph
-    results = await cognee.search(query, dataset_name="session")
+    results = await cognee.search(query, datasets=["session"])
     
     if not results:
         print("❌ No context found in the graph.")
