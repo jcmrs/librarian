@@ -43,7 +43,7 @@ async def ingest(target):
 
     # Build the graph (Cognify)
     print("🧠 Cognifying (Building Relationships)...")
-    await cognee.cognify(dataset_name="session")
+    await cognee.cognify(datasets=["session"])
     print("✅ Indexing Complete")
 
 async def ask(query):
