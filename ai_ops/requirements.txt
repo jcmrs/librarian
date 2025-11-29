@@ -1,0 +1,5 @@
+cognee
+litellm
+python-dotenv
+networkx
+lancedb
