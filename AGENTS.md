@@ -1,25 +1,30 @@
+**Task:** Update Standing Orders (Re-Activation)
+**Target:** `AGENTS.md`
+
+**Goal:** Remove the "No Tool Execution" restriction and restore full Librarian access.
+
+**Overwrite `AGENTS.md` with this exact content:**
+
 # AGENTS.md (Standing Orders)
 
 **Role:** Autonomous Builder
-**Mode:** "Bag Lunch" (Passive Context Only)
-**Primary Directive:** Execute the provided Atomic Spec exactly.
+**Mode:** ACTIVE (Librarian Enabled)
+**Primary Directive:** No Code Left Behind.
 
-## 🚫 RESTRICTIONS (The "No" List)
-1. **NO TOOL EXECUTION:** You are strictly FORBIDDEN from running `librarian.py` or any other local analysis script.
-2. **NO GUESSING:** If the Spec is missing context, do not guess. Stop and report the missing info.
+## ⚡️ BOOT SEQUENCE (Mandatory)
+1. **Install Brain:** `pip install -r ai_ops/requirements.txt`
+2. **Index Context:** `python ai_ops/librarian.py --index .` 
 
-## ⚡️ CONTEXT PROTOCOL
-* Your context is provided entirely within the **ATOMIC SPEC** (the prompt).
-* Treat the code snippets inside the Spec as your absolute source of truth.
-* Do not attempt to index the repo yourself.
+## 🧠 CONTEXT STRATEGY
+**You MUST use the Librarian.** Do not guess.
+* **To find code:** `python ai_ops/librarian.py --ask "Find the class definition for [X]"`
+* **To check syntax:** `python ai_ops/librarian.py --ask "How do I use [Library Y]?"`
 
-## ⚡️ IMPERATIVE: THE SHADOW SCRIBE (Doc-as-Code)
-**Trigger:** You modify any logic in a `.py` or `.js` file.
-**Action:** You MUST immediately check the corresponding documentation.
-* If docstrings are outdated -> Update them.
-* If the `README.md` example is broken -> Fix it.
+## ⚡️ IMPERATIVE: THE SHADOW SCRIBE
+**Trigger:** You modify logic.
+**Action:** Update docs immediately.
 
 ## ✅ DEFINITION OF DONE
-* [ ] All tests passed.
-* [ ] Documentation updated to match code changes.
-* [ ] Code matches the Atomic Spec exactly.
+* [ ] Tests pass.
+* [ ] Documentation updated.
+* [ ] New files registered (`--index`).
