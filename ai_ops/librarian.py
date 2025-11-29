@@ -31,15 +31,17 @@ async def ingest(target):
                             await cognee.add(f.read(), dataset_name="session")
                     except Exception: pass
 
-    print("🧠 Building Graph...")
-    await cognee.cognify(dataset_name="session")
+    # Build the graph (Cognify)
+    print("🧠 Cognifying (Building Relationships)...")
+    await cognee.cognify(datasets=["session"])
     print("✅ Indexing Complete")
 
 async def ask(query):
     """Search and Synthesize"""
     print(f"🤔 Thinking: {query}")
-    # Fix: Ensure correct argument type for search
-    results = await cognee.search(query, dataset_name="session")
+    
+    # 1. Search the graph
+    results = await cognee.search(query, datasets=["session"])
     
     if not results:
         print("❌ No context found.")
