@@ -1,10 +1,3 @@
-**Task:** Update Standing Orders (Re-Activation)
-**Target:** `AGENTS.md`
-
-**Goal:** Remove the "No Tool Execution" restriction and restore full Librarian access.
-
-**Overwrite `AGENTS.md` with this exact content:**
-
 # AGENTS.md (Standing Orders)
 
 **Role:** Autonomous Builder
