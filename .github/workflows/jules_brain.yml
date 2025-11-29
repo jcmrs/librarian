@@ -1,0 +1,69 @@
+name: Jules (The Backroom Builder)
+
+on:
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  jules_execute:
+    if: contains(github.event.issue.body, '@Jules') || contains(github.event.comment.body, '@Jules')
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Install Brain (The Librarian)
+        run: |
+          pip install -r ai_ops/requirements.txt
+
+      - name: 🧠 Index Context (JIT Memory)
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_MODEL: "gemini/gemini-2.5-flash"
+          LLM_PROVIDER: "gemini"
+          GRAPH_DATABASE_PROVIDER: "networkx"
+          VECTOR_DATABASE_PROVIDER: "lancedb"
+          RELATIONAL_DATABASE_PROVIDER: "sqlite"
+          COGNEE_ROOT_DIR: "./.cognee_memory"
+        run: |
+          # Jules learns the repo structure instantly
+          python ai_ops/librarian.py --index .
+
+      - name: 🤖 Jules Execution (The Agent)
+        # This step uses a generic AI Action to interpret your Issue 
+        # and use the tools we just installed.
+        # Since we are self-hosting, we use a simple "Script Runner" pattern here.
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        run: |
+          # PROVISIONAL: For now, we confirm Jules is listening.
+          # In the full version, we would pipe the Issue Body into a python script 
+          # that calls Gemini to write the code.
+          echo "Jules is awake. Context indexed."
+          echo "Target Task detected."
+
+      - name: 💬 Reply to Commander
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "🤖 **Jules Online.** I have indexed the repository using the Librarian. (Note: Full auto-coding logic pending final script)."
+            })
