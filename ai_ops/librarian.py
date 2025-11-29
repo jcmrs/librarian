@@ -4,23 +4,19 @@ import asyncio
 import cognee
 from litellm import completion
 
-# --- CONFIGURATION (Jules-Safe Embedded Mode) ---
-# 1. API Key: Pulled from Environment (GitHub Secrets)
+# CONFIGURATION
 os.environ["LLM_PROVIDER"] = "gemini"
 os.environ["LLM_MODEL"] = "gemini/gemini-2.5-flash"
-
-# 2. Database: Embedded Files (No Docker/Server required)
 os.environ["GRAPH_DATABASE_PROVIDER"] = "networkx"
 os.environ["VECTOR_DATABASE_PROVIDER"] = "lancedb"
 os.environ["RELATIONAL_DATABASE_PROVIDER"] = "sqlite"
 os.environ["COGNEE_ROOT_DIR"] = "./.cognee_memory"
 
 async def ingest(target):
-    """Recursive file ingestion"""
     print(f"📚 Indexing Target: {target}")
     if os.path.isfile(target):
         with open(target, 'r', encoding='utf-8') as f:
-            await cognee.add(f.read(), dataset_name="session")
+            await cognee.add(f.read(), "session")
     elif os.path.isdir(target):
         for root, _, files in os.walk(target):
             for file in files:
@@ -28,19 +24,17 @@ async def ingest(target):
                     path = os.path.join(root, file)
                     try:
                         with open(path, 'r', encoding='utf-8') as f:
-                            await cognee.add(f.read(), dataset_name="session")
+                            await cognee.add(f.read(), "session")
                     except Exception: pass
-
-    # Build the graph (Cognify)
-    print("🧠 Cognifying (Building Relationships)...")
+    
+    print("🧠 Building Graph...")
+    # FIX: Use datasets list for v0.4.1 compatibility
     await cognee.cognify(datasets=["session"])
     print("✅ Indexing Complete")
 
 async def ask(query):
-    """Search and Synthesize"""
     print(f"🤔 Thinking: {query}")
-    
-    # 1. Search the graph
+    # FIX: Use datasets list
     results = await cognee.search(query, datasets=["session"])
     
     if not results:
