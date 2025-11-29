@@ -1,8 +1,10 @@
 name: Jules (The Backroom Builder)
 
 on:
-  issues: [opened, edited]
-  issue_comment: [created]
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created]
 
 permissions:
   contents: write
@@ -11,14 +13,24 @@ permissions:
 
 jobs:
   jules_execute:
-    if: contains(github.event.issue.body, '@Jules')
+    if: contains(github.event.issue.body, '@Jules') || contains(github.event.comment.body, '@Jules')
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-        with: {python-version: '3.11'}
-      - run: pip install -r ai_ops/requirements.txt
-      - env:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Install Brain (The Librarian)
+        run: |
+          pip install -r ai_ops/requirements.txt
+
+      - name: 🧠 Index Context (JIT Memory)
+        env:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLM_MODEL: "gemini/gemini-2.5-flash"
           LLM_PROVIDER: "gemini"
@@ -26,7 +38,25 @@ jobs:
           VECTOR_DATABASE_PROVIDER: "lancedb"
           RELATIONAL_DATABASE_PROVIDER: "sqlite"
           COGNEE_ROOT_DIR: "./.cognee_memory"
-        run: python ai_ops/librarian.py --index .
-      - env:
+        run: |
+          python ai_ops/librarian.py --index .
+
+      - name: 🤖 Jules Execution (The Agent)
+        env:
           ISSUE_BODY: ${{ github.event.issue.body }}
-        run: echo "Jules Online. Task Received."
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        run: |
+          echo "Jules is awake. Context indexed."
+          echo "Target Task detected."
+
+      - name: 💬 Reply to Commander
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "🤖 **Jules Online.** I have indexed the repository using the Librarian."
+            })
