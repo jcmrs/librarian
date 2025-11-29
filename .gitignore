@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.env
+.cognee_memory/
+.DS_Store
